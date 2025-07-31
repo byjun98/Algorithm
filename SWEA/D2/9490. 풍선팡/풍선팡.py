@@ -1,24 +1,54 @@
-T = int(input())
-dirs = [(-1,0),(1,0),(0,-1),(0,1)]
+# 테스트 케이스 개수 입력
+total_case = int(input())
 
-for tc in range(1, T+1):
-    N, M = map(int, input().split())
-    grid = [list(map(int, input().split())) for _ in range(N)]
-    
-    max_pollen = 0
-    for i in range(N):
-        for j in range(M):
-            s = grid[i][j]
-            # 각 방향으로 1칸부터 grid[i][j]칸까지 폭발
-            for dx, dy in dirs:
-                for step in range(1, grid[i][j] + 1):
-                    ni, nj = i + dx * step, j + dy * step
-                    # 범위 안이면 더하고, 벗어나면 그 방향 종료
-                    if 0 <= ni < N and 0 <= nj < M:
-                        s += grid[ni][nj]
-                    else:
-                        break
-            if s > max_pollen:
-                max_pollen = s
-    
-    print(f"#{tc} {max_pollen}")
+for case_number in range(1, total_case + 1):
+    # 격자의 행 개수와 열 개수 입력
+    row_count, col_count = map(int, input().split())
+
+    # 격자 입력 받기
+    grid = []
+    for _ in range(row_count):
+        grid.append(list(map(int, input().split())))
+
+    max_total = 0  # 지금까지 찾은 최대 꽃가루 합
+
+    # 모든 칸 하나하나 검사하기
+    for row in range(row_count):
+        for col in range(col_count):
+            power = grid[row][col]  # 이 칸에서 퍼질 수 있는 거리
+            total = power           # 먼저 자기 자신 값부터 더하기
+
+            # 위쪽으로 퍼지기
+            for step in range(1, power + 1):
+                new_row = row - step
+                if new_row < 0:
+                    break  # 격자 벗어나면 멈춤
+                total += grid[new_row][col]
+
+            # 아래쪽으로 퍼지기
+            for step in range(1, power + 1):
+                new_row = row + step
+                if new_row >= row_count:
+                    break
+                total += grid[new_row][col]
+
+            # 왼쪽으로 퍼지기
+            for step in range(1, power + 1):
+                new_col = col - step
+                if new_col < 0:
+                    break
+                total += grid[row][new_col]
+
+            # 오른쪽으로 퍼지기
+            for step in range(1, power + 1):
+                new_col = col + step
+                if new_col >= col_count:
+                    break
+                total += grid[row][new_col]
+
+            # 지금까지 찾은 최대값보다 크면 갱신
+            if total > max_total:
+                max_total = total
+
+    # 결과 출력
+    print(f"#{case_number} {max_total}")
