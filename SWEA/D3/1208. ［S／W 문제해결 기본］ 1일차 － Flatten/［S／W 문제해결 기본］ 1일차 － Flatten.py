@@ -12,8 +12,6 @@ for t in range(1, T + 1):
             if data[min_box] > data[i]:
                 min_box = i
                 
-        if data[max_box] - data[min_box] <= 1:
-            break
                         
         data[max_box] -= 1
         data[min_box] += 1
